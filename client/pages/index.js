@@ -1,94 +1,65 @@
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context";
-import ParallaxBG from "../components/cards/ParallaxBG";
-import axios from "axios";
-import PostPublic from "../components/cards/PostPublic";
-import Head from "next/head";
-import Link from "next/link";
-import io from "socket.io-client";
+import Link from 'next/link'
+import dbConnect from '../lib/dbConnect'
+import Pet from '../models/Pet'
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKETIO, {
-  reconnection: true,
-});
+const Index = ({ pets }) => (
+  <>
+    {/* Create a card for each pet */}
+    {pets.map((pet) => (
+      <div key={pet._id}>
+        <div className="card">
+          <img src={pet.image_url} />
+          <h5 className="pet-name">{pet.name}</h5>
+          <div className="main-content">
+            <p className="pet-name">{pet.name}</p>
+            <p className="owner">Owner: {pet.owner_name}</p>
 
-const Home = ({ posts }) => {
-  const [state, setState] = useContext(UserContext);
+            {/* Extra Pet Info: Likes and Dislikes */}
+            <div className="likes info">
+              <p className="label">Likes</p>
+              <ul>
+                {pet.likes.map((data, index) => (
+                  <li key={index}>{data} </li>
+                ))}
+              </ul>
+            </div>
+            <div className="dislikes info">
+              <p className="label">Dislikes</p>
+              <ul>
+                {pet.dislikes.map((data, index) => (
+                  <li key={index}>{data} </li>
+                ))}
+              </ul>
+            </div>
 
-  const [newsFeed, setNewsFeed] = useState([]);
-
-  // useEffect(() => {
-  //   // console.log("SOCKETIO ON JOIN", socket);
-  //   socket.on("receive-message", (newMessage) => {
-  //     alert(newMessage);
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    socket.on("new-post", (newPost) => {
-      setNewsFeed([newPost, ...posts]);
-    });
-  }, []);
-
-  const head = () => (
-    <Head>
-      <title>Dakshta Media - A social network by devs for devs</title>
-      <meta
-        name="description"
-        content="A social network by developers for other web developers"
-      />
-      <meta
-        property="og:description"
-        content="A social network by developers for other web developers"
-      />
-      <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Dakshta Media" />
-      <meta property="og:url" content="http://dakshtasharma.com" />
-      <meta
-        property="og:image:secure_url"
-        content="http://dakshtasharma.com/images/default.jpg"
-      />
-    </Head>
-  );
-
-  const collection = newsFeed.length > 0 ? newsFeed : posts;
-
-  return (
-    <>
-      {head()}
-      <ParallaxBG url="/images/default.jpg" />
-
-      <div className="container">
-        {/* <button
-          onClick={() => {
-            socket.emit("send-message", "This is Dakshita!!!");
-          }}
-        >
-          Send message
-        </button> */}
-        <div className="row pt-5">
-          {collection.map((post) => (
-            <div key={post._id} className="col-md-4">
-              <Link href={`/post/view/${post._id}`}>
-                <a>
-                  <PostPublic key={post._id} post={post} />
-                </a>
+            <div className="btn-container">
+              <Link href="/[id]/edit" as={`/${pet._id}/edit`} legacyBehavior>
+                <button className="btn edit">Edit</button>
+              </Link>
+              <Link href="/[id]" as={`/${pet._id}`} legacyBehavior>
+                <button className="btn view">View</button>
               </Link>
             </div>
-          ))}
+          </div>
         </div>
       </div>
-    </>
-  );
-};
+    ))}
+  </>
+)
 
+/* Retrieves pet(s) data from mongodb database */
 export async function getServerSideProps() {
-  const { data } = await axios.get("/posts");
-  // console.log(data);
-  return {
-    props: {
-      posts: data,
-    },
-  };
+  await dbConnect()
+
+  /* find all the data in our database */
+  const result = await Pet.find({})
+  const pets = result.map((doc) => {
+    const pet = doc.toObject()
+    pet._id = pet._id.toString()
+    return pet
+  })
+
+  return { props: { pets: pets } }
 }
 
-export default Home;
+export default Index

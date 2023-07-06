@@ -1,22 +1,32 @@
-import { UserProvider } from "../context";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Nav from "../components/Nav";
-import Head from "next/head";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "antd/dist/antd.css";
+import '../css/style.css'
+import '../css/form.css'
+import Head from 'next/head'
+import Link from 'next/link'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <UserProvider>
+    <>
       <Head>
-        <link rel="stylesheet" href="/css/styles.css" />
+        <title>Pet Care App</title>
       </Head>
-      <Nav />
-      <ToastContainer position="top-center" />
-      <Component {...pageProps} />
-    </UserProvider>
-  );
+
+      <div className="top-bar">
+        <div className="nav">
+          <Link href="/">Home</Link>
+          <Link href="/new">Add Pet</Link>
+        </div>
+
+        <img
+          id="title"
+          src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Pet_logo_with_flowers.png"
+          alt="pet care logo"
+        ></img>
+      </div>
+      <div className="grid wrapper">
+        <Component {...pageProps} />
+      </div>
+    </>
+  )
 }
 
-export default MyApp;
+export default MyApp
