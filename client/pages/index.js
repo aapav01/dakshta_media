@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import dbConnect from '../lib/dbConnect'
-import Pet from '../models/Pet'
+import Post from '../models/Post'
 
 const Index = ({ pets }) => (
   <>
@@ -52,7 +52,7 @@ export async function getServerSideProps() {
   await dbConnect()
 
   /* find all the data in our database */
-  const result = await Pet.find({})
+  const result = await Post.find({})
   const pets = result.map((doc) => {
     const pet = doc.toObject()
     pet._id = pet._id.toString()
