@@ -1,5 +1,6 @@
 import React from "react";
 import Login from "./dialog/Login";
+import Register from "./dialog/Register";
 
 export default function NavBar() {
   return (
@@ -8,12 +9,12 @@ export default function NavBar() {
         <a className="btn btn-ghost normal-case text-xl">Dakshta Media</a>
       </div>
       <div className="flex-none">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal gap-2 px-1">
           <li>
             <Login />
           </li>
           <li>
-            <a>Register</a>
+            <Register />
           </li>
         </ul>
       </div>
