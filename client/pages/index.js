@@ -1,10 +1,14 @@
 import Link from "next/link";
 import dbConnect from "@/lib/dbConnect";
 import Post from "@/models/Post";
+import HomeHero from "@/components/HomeHero";
 
 export default function HomePage() {
   return (
-    <div>index</div>
+    <main>
+      <HomeHero />
+      <section className="container"></section>
+    </main>
   )
 }
 
