@@ -1,4 +1,5 @@
 import React from "react";
+import Login from "./dialog/Login";
 
 export default function NavBar() {
   return (
@@ -9,7 +10,7 @@ export default function NavBar() {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a>Login</a>
+            <Login />
           </li>
           <li>
             <a>Register</a>
